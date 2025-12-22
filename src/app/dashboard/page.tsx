@@ -8,6 +8,8 @@ import StatCard from "@/components/ui/statCard";
 import PageContainer from "@/components/layout/pageContainer";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
+import PaymentsChart from "@/components/ui/paymentsChart";
+
 
 export default function DashboardPage() {
     const [users, setUsers] = useState<User[]>([]);
@@ -21,6 +23,21 @@ export default function DashboardPage() {
     const totalUsers = users.length;
     const totalPayments = payments.filter((p) => p.status === "Pago").length;
     const pendingPayments = payments.filter((p) => p.status === "Pendente").length;
+    const chartData = [
+        {
+            name: "Pago",
+            total: payments.filter((p) => p.status === "Pago").length,
+        },
+        {
+            name: "Pendente",
+            total: payments.filter((p) => p.status === "Pendente").length,
+        },
+        {
+            name: "Falha",
+            total: payments.filter((p) => p.status === "Falha").length,
+        },
+    ];
+
 
     return (
         <PageContainer>
@@ -28,18 +45,18 @@ export default function DashboardPage() {
             <main className="flex-1 flex flex-col">
                 <Header />
                 <div className="p-6 space-y-6">
-                    {/* Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-blue-900">
                         <StatCard title="Total de Usuários" value={totalUsers} />
                         <StatCard title="Pagamentos Pagos" value={totalPayments} />
                         <StatCard title="Pagamentos Pendentes" value={pendingPayments} />
+                        <PaymentsChart data={chartData} />
                     </div>
 
                     <div className="bg-white p-4 rounded shadow text-black">
                         <h2 className="text-xl font-bold mb-4">Usuários</h2>
                         <table className="w-full table-auto border-collapse">
                             <thead>
-                                <tr className="bg-gray-100">
+                                <tr className="bg-gray-200">
                                     <th className="p-2 border">Nome</th>
                                     <th className="p-2 border">Email</th>
                                     <th className="p-2 border">Status</th>
