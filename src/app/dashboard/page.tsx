@@ -9,16 +9,34 @@ import PageContainer from "@/components/layout/pageContainer";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import PaymentsChart from "@/components/ui/paymentsChart";
-
+import MonthlyRevenueChart from "@/components/ui/monthlyRevenueChart";
+import { groupPaymentsByMonth } from "@/utils/payments";
+import DashboardSkeleton from "@/components/skeletons/dashboardSkeleton";
 
 export default function DashboardPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [payments, setPayments] = useState<Payment[]>([]);
+    const monthlyData = groupPaymentsByMonth(payments);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getUsers().then(setUsers);
-        getPayments().then(setPayments);
+        async function loadData() {
+            setLoading(true);
+
+            const [usersData, paymentsData] = await Promise.all([
+                getUsers(),
+                getPayments(),
+            ]);
+
+            setUsers(usersData);
+            setPayments(paymentsData);
+
+            setLoading(false);
+        }
+
+        loadData();
     }, []);
+
 
     const totalUsers = users.length;
     const totalPayments = payments.filter((p) => p.status === "Pago").length;
@@ -37,6 +55,19 @@ export default function DashboardPage() {
             total: payments.filter((p) => p.status === "Falha").length,
         },
     ];
+    if (loading) {
+        return (
+            <PageContainer>
+                <Sidebar />
+                <main className="flex-1 flex flex-col">
+                    <Header />
+                    <div className="p-6">
+                        <DashboardSkeleton />
+                    </div>
+                </main>
+            </PageContainer>
+        );
+    }
 
 
     return (
@@ -44,12 +75,14 @@ export default function DashboardPage() {
             <Sidebar />
             <main className="flex-1 flex flex-col">
                 <Header />
+
                 <div className="p-6 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-blue-900">
                         <StatCard title="Total de Usuários" value={totalUsers} />
                         <StatCard title="Pagamentos Pagos" value={totalPayments} />
                         <StatCard title="Pagamentos Pendentes" value={pendingPayments} />
                         <PaymentsChart data={chartData} />
+                        <MonthlyRevenueChart data={monthlyData} />
                     </div>
 
                     <div className="bg-white p-4 rounded shadow text-black">
@@ -73,6 +106,7 @@ export default function DashboardPage() {
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </main>
         </PageContainer>
