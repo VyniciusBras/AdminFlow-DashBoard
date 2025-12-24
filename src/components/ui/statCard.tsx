@@ -1,22 +1,29 @@
 "use client";
 
-import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
-type StatCardProps = {
+type Props = {
     title: string;
-    value: string | number;
-    icon?: ReactNode;
-    color?: string
+    value: number;
+    bgColor?: string;
 };
 
-export default function Statcard({ title, value, icon, color }: StatCardProps) {
+export default function StatCard({ title, value, bgColor }: Props) {
     return (
-        <div className={`p-4 rounded shadow flex items-center justify-between bg-white`}>
-            <div>
-                <div className="text-gray-500">{title}</div>
-                <div className="text-2xl font-bold">{value}</div>
-            </div>
-            {icon && <div className={`text-3xl ${color}`}>{icon}</div>}
-        </div>
-    )
+        <motion.div
+            className={`${bgColor} rounded-lg p-4 shadow cursor-pointer`}
+            whileHover={{
+                scale: 1.03,
+                boxShadow: "0px 10px 20px rgba(0,0,0,0.12)",
+            }}
+            transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+            }}
+        >
+            <h3 className="text-sm text-black">{title}</h3>
+            <p className="text-2xl font-bold text-blue-900">{value}</p>
+        </motion.div>
+    );
 }

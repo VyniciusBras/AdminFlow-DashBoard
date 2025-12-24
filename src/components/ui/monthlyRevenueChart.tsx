@@ -13,7 +13,6 @@ import { MonthlyData } from "@/utils/payments";
 import { accumulateMonthlyData } from "@/utils/payments";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { formatCurrencyBR } from "@/utils/format";
-import { TooltipProps } from "recharts";
 
 type Props = {
     data: MonthlyData[];
@@ -52,7 +51,7 @@ export default function MonthlyRevenueChart({ data }: Props) {
     }, [mode, data]);
 
     return (
-        <div className="bg-white p-4 rounded shadow">
+        <div className="bg-white p-4 h-100 rounded shadow">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">
                     Evolução de Pagamentos
@@ -77,8 +76,8 @@ export default function MonthlyRevenueChart({ data }: Props) {
                     <Line
                         type="monotone"
                         dataKey="total"
-                        stroke="#2563eb"
-                        strokeWidth={2}
+                        stroke="#25a2eb"
+                        strokeWidth={3}
                     />
                 </LineChart>
             </ResponsiveContainer>

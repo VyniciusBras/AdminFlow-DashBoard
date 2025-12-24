@@ -12,6 +12,8 @@ import PaymentsChart from "@/components/ui/paymentsChart";
 import MonthlyRevenueChart from "@/components/ui/monthlyRevenueChart";
 import { groupPaymentsByMonth } from "@/utils/payments";
 import DashboardSkeleton from "@/components/skeletons/dashboardSkeleton";
+import { motion } from "framer-motion";
+import { fadeInUp } from "@/animations/fadeInUp";
 
 export default function DashboardPage() {
     const [users, setUsers] = useState<User[]>([]);
@@ -78,18 +80,39 @@ export default function DashboardPage() {
 
                 <div className="p-6 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-blue-900">
-                        <StatCard title="Total de Usuários" value={totalUsers} />
-                        <StatCard title="Pagamentos Pagos" value={totalPayments} />
-                        <StatCard title="Pagamentos Pendentes" value={pendingPayments} />
-                        <PaymentsChart data={chartData} />
-                        <MonthlyRevenueChart data={monthlyData} />
+                        <motion.div variants={fadeInUp} initial="hidden" animate="visible" >
+                            <StatCard title="Total de Usuários" value={totalUsers} bgColor="bg-yellow-300" />
+                        </motion.div>
+
+                        <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
+                            <StatCard title="Pagamentos Pagos" value={totalPayments} bgColor="bg-green-300" />
+                        </motion.div>
+
+                        <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
+                            <StatCard title="Pagamentos Pendentes" value={pendingPayments} bgColor="bg-red-300" />
+                        </motion.div>
+
+                        <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
+                            <PaymentsChart data={chartData} />
+                        </motion.div>
+
+                        <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.4 }}>
+                            <MonthlyRevenueChart data={monthlyData} />
+                        </motion.div>
                     </div>
 
-                    <div className="bg-white p-4 rounded shadow text-black">
+                    <motion.div
+                        variants={fadeInUp}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ delay: 1.0 }}
+                        className="bg-white p-4 rounded shadow text-black"
+                    >
+
                         <h2 className="text-xl font-bold mb-4">Usuários</h2>
                         <table className="w-full table-auto border-collapse">
                             <thead>
-                                <tr className="bg-gray-200">
+                                <tr className="bg-gray-300">
                                     <th className="p-2 border">Nome</th>
                                     <th className="p-2 border">Email</th>
                                     <th className="p-2 border">Status</th>
@@ -98,17 +121,17 @@ export default function DashboardPage() {
                             <tbody>
                                 {users.map((user) => (
                                     <tr key={user.id}>
-                                        <td className="p-2 border">{user.name}</td>
+                                        <td className="p-2 border">{user.name} </td>
                                         <td className="p-2 border">{user.email}</td>
                                         <td className="p-2 border">{user.status}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                    </div>
+                    </motion.div>
 
                 </div>
             </main>
-        </PageContainer>
+        </PageContainer >
     );
 }
