@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 import { getUsers, getPayments } from "@/services/api";
 import { User } from "@/types/user";
 import { Payment } from "@/types/payment";
+import { motion } from "framer-motion";
+import { fadeInUp } from "@/animations/fadeInUp";
+import { groupPaymentsByMonth } from "@/utils/payments";
+
 import StatCard from "@/components/ui/statCard";
 import PageContainer from "@/components/layout/pageContainer";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import PaymentsChart from "@/components/ui/paymentsChart";
 import MonthlyRevenueChart from "@/components/ui/monthlyRevenueChart";
-import { groupPaymentsByMonth } from "@/utils/payments";
 import DashboardSkeleton from "@/components/skeletons/dashboardSkeleton";
-import { motion } from "framer-motion";
-import { fadeInUp } from "@/animations/fadeInUp";
 
 export default function DashboardPage() {
     const [users, setUsers] = useState<User[]>([]);
@@ -81,7 +82,7 @@ export default function DashboardPage() {
                 <div className="p-6 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-blue-900">
                         <motion.div variants={fadeInUp} initial="hidden" animate="visible" >
-                            <StatCard title="Total de Usuários" value={totalUsers} bgColor="bg-yellow-300" />
+                            <StatCard title="Total de Usuários" value={totalUsers} bgColor="bg-cyan-300" />
                         </motion.div>
 
                         <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
@@ -89,14 +90,16 @@ export default function DashboardPage() {
                         </motion.div>
 
                         <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
-                            <StatCard title="Pagamentos Pendentes" value={pendingPayments} bgColor="bg-red-300" />
+                            <StatCard title="Pagamentos Pendentes" value={pendingPayments} bgColor="bg-orange-300" />
                         </motion.div>
+                    </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
                             <PaymentsChart data={chartData} />
                         </motion.div>
 
-                        <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.4 }}>
+                        <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.4 }} className="md:col-span-2">
                             <MonthlyRevenueChart data={monthlyData} />
                         </motion.div>
                     </div>

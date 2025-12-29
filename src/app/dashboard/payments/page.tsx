@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { getPayments } from "@/services/api";
 import { Payment } from "@/types/payment";
 import { Table, TableBody, TableCell, TableHead, TableRow, Chip, Paper, TableSortLabel, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { motion } from "framer-motion";
 
 import PageContainer from "@/components/layout/pageContainer";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import PaymentDetailsModal from "@/components/ui/paymentsDetailsModal";
+import TableSkeleton from "@/components/skeletons/tableSkeleton";
 
 type Order = "asc" | "desc";
 
@@ -32,6 +34,8 @@ export default function PaymentsPage() {
     const [orderBy, setOrderBy] = useState<keyof Payment>("date");
     const [orderDirection, setOrderDirection] = useState<Order>("asc");
     const [filterStatus, setFilterStatus] = useState<Payment["status"] | "Todos">("Todos");
+    const [loading, setLoading] = useState(true);
+    const MotionTableRow = motion(TableRow);
 
     function sortPayments(
         payments: Payment[],
@@ -53,7 +57,9 @@ export default function PaymentsPage() {
     }
 
     useEffect(() => {
-        getPayments().then(setPayments);
+        getPayments()
+            .then(setPayments)
+            .finally(() => setLoading(false));
     }, []);
     const handleOpenModal = (payment: Payment) => {
         setSelectedPayment(payment);
@@ -104,84 +110,95 @@ export default function PaymentsPage() {
                         </FormControl>
                     </div>
 
-                    <Paper>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={orderBy === "user"}
-                                            direction={orderBy === "user" ? orderDirection : "asc"}
-                                            onClick={() => handleSort("user")}
-                                        >
-                                            Usuário
-                                        </TableSortLabel>
-                                    </TableCell>
 
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={orderBy === "amount"}
-                                            direction={orderBy === "amount" ? orderDirection : "asc"}
-                                            onClick={() => handleSort("amount")}
-                                        >
-                                            Valor
-                                        </TableSortLabel>
-                                    </TableCell>
-
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={orderBy === "status"}
-                                            direction={orderBy === "status" ? orderDirection : "asc"}
-                                            onClick={() => handleSort("status")}
-                                        >
-                                            Status
-                                        </TableSortLabel>
-                                    </TableCell>
-
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={orderBy === "date"}
-                                            direction={orderBy === "date" ? orderDirection : "asc"}
-                                            onClick={() => handleSort("date")}
-                                        >
-                                            Data
-                                        </TableSortLabel>
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-
-                            <TableBody>
-                                {sortedPayments.map((payment) => (
-                                    <TableRow
-                                        key={payment.id}
-                                        hover
-                                        className="cursor-pointer"
-                                        onClick={() =>
-                                            handleOpenModal(payment)
-                                        }
-                                    >
+                    {loading ? (
+                        <TableSkeleton />
+                    ) : (
+                        <Paper>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
                                         <TableCell>
-                                            {payment.user}
+                                            <TableSortLabel
+                                                active={orderBy === "user"}
+                                                direction={orderBy === "user" ? orderDirection : "asc"}
+                                                onClick={() => handleSort("user")}
+                                            >
+                                                Usuário
+                                            </TableSortLabel>
                                         </TableCell>
+
                                         <TableCell>
-                                            R$ {payment.amount.toFixed(2)}
+                                            <TableSortLabel
+                                                active={orderBy === "amount"}
+                                                direction={orderBy === "amount" ? orderDirection : "asc"}
+                                                onClick={() => handleSort("amount")}
+                                            >
+                                                Valor
+                                            </TableSortLabel>
                                         </TableCell>
+
                                         <TableCell>
-                                            <Chip
-                                                label={payment.status}
-                                                color={getStatusColor(payment.status)}
-                                                size="small"
-                                            />
+                                            <TableSortLabel
+                                                active={orderBy === "status"}
+                                                direction={orderBy === "status" ? orderDirection : "asc"}
+                                                onClick={() => handleSort("status")}
+                                            >
+                                                Status
+                                            </TableSortLabel>
                                         </TableCell>
+
                                         <TableCell>
-                                            {payment.date}
+                                            <TableSortLabel
+                                                active={orderBy === "date"}
+                                                direction={orderBy === "date" ? orderDirection : "asc"}
+                                                onClick={() => handleSort("date")}
+                                            >
+                                                Data
+                                            </TableSortLabel>
                                         </TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </Paper>
+                                </TableHead>
+
+                                <TableBody>
+                                    {sortedPayments.map((payment, index) => (
+                                        <MotionTableRow
+                                            key={payment.id}
+                                            hover
+                                            className="cursor-pointer"
+                                            onClick={() => handleOpenModal(payment)}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{
+                                                duration: 0.4,
+                                                ease: "easeOut",
+                                                delay: index * 0.10
+                                            }}
+                                        >
+                                            <TableCell>{payment.user}</TableCell>
+
+                                            <TableCell>
+                                                R$ {payment.amount.toFixed(2)}
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <Chip
+                                                    label={payment.status}
+                                                    color={getStatusColor(payment.status)}
+                                                    size="small"
+                                                />
+                                            </TableCell>
+
+                                            <TableCell>{payment.date}</TableCell>
+                                        </MotionTableRow>
+                                    ))}
+                                </TableBody>
+
+                            </Table>
+                        </Paper>
+                    )}
                 </div>
+
             </main>
             <PaymentDetailsModal
                 open={openModal}

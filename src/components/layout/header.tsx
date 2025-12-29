@@ -15,8 +15,8 @@ export default function Header() {
 
     return (
         <header className="bg-gray-200 shadow-md flex justify-end items-center p-4">
-            <div className="mr-4 text-black">{user?.name}</div>
-            <Button variant="outlined" onClick={handleLogout} size="small">
+            <div className="mr-4 text-black ">{user?.name}</div>
+            <Button variant="outlined" onClick={handleLogout} size="small" >
                 Sair
             </Button>
         </header>

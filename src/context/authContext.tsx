@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         const fakeUser: AuthUser = {
             id: "1",
-            name: "Admin",
+            name: "AdminUser",
             email,
         };
 

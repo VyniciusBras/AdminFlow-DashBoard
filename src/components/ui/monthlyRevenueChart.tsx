@@ -51,7 +51,7 @@ export default function MonthlyRevenueChart({ data }: Props) {
     }, [mode, data]);
 
     return (
-        <div className="bg-white p-4 h-100 rounded shadow">
+        <div className="bg-white p-4 h-100 rounded shadow text-blue-900">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">
                     Evolução de Pagamentos
@@ -76,7 +76,7 @@ export default function MonthlyRevenueChart({ data }: Props) {
                     <Line
                         type="monotone"
                         dataKey="total"
-                        stroke="#25a2eb"
+                        stroke="#00aeff"
                         strokeWidth={3}
                     />
                 </LineChart>

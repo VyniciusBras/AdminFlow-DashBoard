@@ -8,6 +8,10 @@ export type MonthlyData = {
 export function groupPaymentsByMonth(payments: Payment[]): MonthlyData[] {
   const map: Record<number, number> = {};
 
+  for (let i = 0; i < 12; i++) {
+    map[i] = 0;
+  }
+
   payments.forEach((payment) => {
     if (payment.status !== "Pago") return;
 
@@ -17,12 +21,25 @@ export function groupPaymentsByMonth(payments: Payment[]): MonthlyData[] {
     map[monthIndex] = (map[monthIndex] || 0) + payment.amount;
   });
 
+  const monthNames = [
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
+  ];
+
   return Object.entries(map)
     .sort(([a], [b]) => Number(a) - Number(b))
     .map(([monthIndex, total]) => ({
-      month: new Date(0, Number(monthIndex)).toLocaleString("pt-BR", {
-        month: "short",
-      }),
+      month: monthNames[Number(monthIndex)],
       total,
     }));
 }
