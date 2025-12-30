@@ -140,6 +140,16 @@ export default function PaymentsPage() {
 
                                         <TableCell>
                                             <TableSortLabel
+                                                active={orderBy === "method"}
+                                                direction={orderBy === "method" ? orderDirection : "asc"}
+                                                onClick={() => handleSort("method")}
+                                            >
+                                                Pagamento
+                                            </TableSortLabel>
+                                        </TableCell>
+
+                                        <TableCell>
+                                            <TableSortLabel
                                                 active={orderBy === "status"}
                                                 direction={orderBy === "status" ? orderDirection : "asc"}
                                                 onClick={() => handleSort("status")}
@@ -179,6 +189,10 @@ export default function PaymentsPage() {
 
                                             <TableCell>
                                                 R$ {payment.amount.toFixed(2)}
+                                            </TableCell>
+
+                                            <TableCell>
+                                                {payment.method}
                                             </TableCell>
 
                                             <TableCell>
