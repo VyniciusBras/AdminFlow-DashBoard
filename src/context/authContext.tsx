@@ -29,9 +29,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     async function login(email: string, password: string) {
-
         if (!email || !password) {
             throw new Error("Credenciais inválidas");
+        }
+
+        if (password.length < 6) {
+            throw new Error("Email ou senha inválidos!");
         }
 
         const fakeUser: AuthUser = {

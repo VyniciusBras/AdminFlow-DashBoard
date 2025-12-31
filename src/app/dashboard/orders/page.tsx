@@ -12,6 +12,7 @@ import Header from "@/components/layout/header";
 import StatusBadge from "@/components/ui/statusBadge";
 import PaymentDetailsModal from "@/components/ui/paymentsDetailsModal";
 import TableSkeleton from "@/components/skeletons/tableSkeleton";
+import ProtectedRoute from "@/components/layout/protectedRoute";
 
 type Order = {
     id: number;
@@ -24,7 +25,7 @@ type Order = {
 
 type SortOrder = "asc" | "desc";
 
-export default function OrdersPage() {
+function OrdersPage() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [payments, setPayments] = useState<Payment[]>([]);
     const [loading, setLoading] = useState(true);
@@ -235,5 +236,13 @@ export default function OrdersPage() {
             </main>
             <PaymentDetailsModal open={openModal} payment={selectedPayment} onClose={handleCloseModal} />
         </PageContainer>
+    );
+}
+
+export default function OrdersPageWithProtection() {
+    return (
+        <ProtectedRoute>
+            <OrdersPage />
+        </ProtectedRoute>
     );
 }

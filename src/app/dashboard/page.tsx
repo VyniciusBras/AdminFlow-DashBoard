@@ -17,6 +17,7 @@ import PaymentsChart from "@/components/ui/paymentsChart";
 import MonthlyRevenueChart from "@/components/ui/monthlyRevenueChart";
 import DashboardSkeleton from "@/components/skeletons/dashboardSkeleton";
 import TableSkeleton from "@/components/skeletons/tableSkeleton";
+import ProtectedRoute from "@/components/layout/protectedRoute";
 
 type Order = "asc" | "desc";
 
@@ -31,7 +32,7 @@ function getStatusColor(status: User["status"]) {
     }
 }
 
-export default function DashboardPage() {
+function DashboardPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [payments, setPayments] = useState<Payment[]>([]);
     const monthlyData = groupPaymentsByMonth(payments);
@@ -241,5 +242,13 @@ export default function DashboardPage() {
                 </div>
             </main>
         </PageContainer >
+    );
+}
+
+export default function DashboardPageWithProtection() {
+    return (
+        <ProtectedRoute>
+            <DashboardPage />
+        </ProtectedRoute>
     );
 }

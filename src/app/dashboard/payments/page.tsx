@@ -11,6 +11,7 @@ import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import PaymentDetailsModal from "@/components/ui/paymentsDetailsModal";
 import TableSkeleton from "@/components/skeletons/tableSkeleton";
+import ProtectedRoute from "@/components/layout/protectedRoute";
 
 type Order = "asc" | "desc";
 
@@ -27,7 +28,7 @@ function getStatusColor(status: Payment["status"]) {
     }
 }
 
-export default function PaymentsPage() {
+function PaymentsPage() {
     const [payments, setPayments] = useState<Payment[]>([]);
     const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
     const [openModal, setOpenModal] = useState(false);
@@ -220,5 +221,13 @@ export default function PaymentsPage() {
                 onClose={handleCloseModal}
             />
         </PageContainer>
+    );
+}
+
+export default function PaymentsPageWithProtection() {
+    return (
+        <ProtectedRoute>
+            <PaymentsPage />
+        </ProtectedRoute>
     );
 }
