@@ -1,13 +1,6 @@
 "use client";
 
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    Tooltip,
-    ResponsiveContainer,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, } from "recharts";
 import { useMemo, useState } from "react";
 import { MonthlyData } from "@/utils/payments";
 import { accumulateMonthlyData } from "@/utils/payments";

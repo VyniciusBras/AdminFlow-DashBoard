@@ -14,7 +14,7 @@ export default function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="w-64 bg-gray-900 shadow-md h-screen flex flex-col p-6">
+        <aside className="w-64 bg-gray-900 shadow-md sticky top-0 flex flex-col p-6 max-h-screen overflow-y-auto">
             <h2 className="text-xl font-bold mb-8 text-white">AdminFlow</h2>
             <nav className="flex flex-col gap-3">
                 {links.map((link) => (

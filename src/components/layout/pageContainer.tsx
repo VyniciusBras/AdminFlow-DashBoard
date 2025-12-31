@@ -8,7 +8,7 @@ type PageContainerProps = {
 
 export default function PageContainer({ children }: PageContainerProps) {
     return (
-        <div className="flex flex-1 min-h-screen bg-gray-100 text-black">
+        <div className="flex bg-gray-100 text-black min-h-screen">
             {children}
         </div>
     );

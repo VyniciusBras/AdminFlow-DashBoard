@@ -19,7 +19,7 @@ const statusColors: Record<string, string> = {
 
 export default function PaymentsChart({ data }: PaymentsChartProps) {
     return (
-        <div className="bg-white p-5 rounded shadow h-100 text-blue-900">
+        <div className="bg-white p-3 rounded shadow h-100 text-blue-900">
             <h2 className="text-lg font-semibold mb-4">
                 Pagamentos por Status
             </h2>

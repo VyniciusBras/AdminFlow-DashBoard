@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getUsers, getPayments } from "@/services/api";
 import { User } from "@/types/user";
 import { Payment } from "@/types/payment";
+import { Table, TableBody, TableCell, TableHead, TableRow, Chip, Paper, TableSortLabel, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { motion } from "framer-motion";
 import { fadeInUp } from "@/animations/fadeInUp";
 import { groupPaymentsByMonth } from "@/utils/payments";
@@ -15,12 +16,48 @@ import Header from "@/components/layout/header";
 import PaymentsChart from "@/components/ui/paymentsChart";
 import MonthlyRevenueChart from "@/components/ui/monthlyRevenueChart";
 import DashboardSkeleton from "@/components/skeletons/dashboardSkeleton";
+import TableSkeleton from "@/components/skeletons/tableSkeleton";
+
+type Order = "asc" | "desc";
+
+function getStatusColor(status: User["status"]) {
+    switch (status) {
+        case "Ativo":
+            return "success";
+        case "Inativo":
+            return "warning";
+        default:
+            return "default";
+    }
+}
 
 export default function DashboardPage() {
     const [users, setUsers] = useState<User[]>([]);
     const [payments, setPayments] = useState<Payment[]>([]);
     const monthlyData = groupPaymentsByMonth(payments);
     const [loading, setLoading] = useState(true);
+    const [orderBy, setOrderBy] = useState<keyof User>("name");
+    const [orderDirection, setOrderDirection] = useState<Order>("asc");
+    const MotionTableRow = motion(TableRow);
+
+    function sortUsers(
+        users: User[],
+        orderBy: keyof User,
+        order: Order
+    ) {
+        return [...users].sort((a, b) => {
+            const aValue = a[orderBy];
+            const bValue = b[orderBy];
+
+            if (typeof aValue === "number" && typeof bValue === "number") {
+                return order === "asc" ? aValue - bValue : bValue - aValue;
+            }
+
+            return order === "asc"
+                ? String(aValue).localeCompare(String(bValue))
+                : String(bValue).localeCompare(String(aValue));
+        });
+    }
 
     useEffect(() => {
         async function loadData() {
@@ -41,6 +78,7 @@ export default function DashboardPage() {
     }, []);
 
 
+
     const totalUsers = users.length;
     const totalPayments = payments.filter((p) => p.status === "Pago").length;
     const pendingPayments = payments.filter((p) => p.status === "Pendente").length;
@@ -58,6 +96,19 @@ export default function DashboardPage() {
             total: payments.filter((p) => p.status === "Falha").length,
         },
     ];
+
+    const handleSort = (property: keyof User) => {
+        const isAsc = orderBy === property && orderDirection === "asc";
+        setOrderDirection(isAsc ? "desc" : "asc");
+        setOrderBy(property);
+    };
+
+    const sortedUsers = sortUsers(
+        users,
+        orderBy,
+        orderDirection
+    );
+
     if (loading) {
         return (
             <PageContainer>
@@ -72,7 +123,6 @@ export default function DashboardPage() {
         );
     }
 
-
     return (
         <PageContainer>
             <Sidebar />
@@ -86,7 +136,7 @@ export default function DashboardPage() {
                         </motion.div>
 
                         <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
-                            <StatCard title="Pagamentos Pagos" value={totalPayments} bgColor="bg-green-300" />
+                            <StatCard title="Pagamentos Concluídos" value={totalPayments} bgColor="bg-green-300" />
                         </motion.div>
 
                         <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
@@ -108,29 +158,84 @@ export default function DashboardPage() {
                         variants={fadeInUp}
                         initial="hidden"
                         animate="visible"
-                        transition={{ delay: 1.0 }}
-                        className="bg-white p-4 rounded shadow text-black"
+                        transition={{ delay: 0.5 }}
                     >
+                        <h2 className="text-2xl font-bold mb-4">
+                            Usuários
+                        </h2>
 
-                        <h2 className="text-xl font-bold mb-4">Usuários</h2>
-                        <table className="w-full table-auto border-collapse">
-                            <thead>
-                                <tr className="bg-gray-300">
-                                    <th className="p-2 border">Nome</th>
-                                    <th className="p-2 border">Email</th>
-                                    <th className="p-2 border">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map((user) => (
-                                    <tr key={user.id}>
-                                        <td className="p-2 border">{user.name} </td>
-                                        <td className="p-2 border">{user.email}</td>
-                                        <td className="p-2 border">{user.status}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        {loading ? (
+                            <TableSkeleton />
+                        ) : (
+                            <Paper>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={orderBy === "name"}
+                                                    direction={orderBy === "name" ? orderDirection : "asc"}
+                                                    onClick={() => handleSort("name")}
+                                                >
+                                                    Nome
+                                                </TableSortLabel>
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={orderBy === "email"}
+                                                    direction={orderBy === "email" ? orderDirection : "asc"}
+                                                    onClick={() => handleSort("email")}
+                                                >
+                                                    Email
+                                                </TableSortLabel>
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={orderBy === "status"}
+                                                    direction={orderBy === "status" ? orderDirection : "asc"}
+                                                    onClick={() => handleSort("status")}
+                                                >
+                                                    Status
+                                                </TableSortLabel>
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+
+                                    <TableBody>
+                                        {sortedUsers.map((user, index) => (
+                                            <MotionTableRow
+                                                key={user.id}
+                                                hover
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{
+                                                    duration: 0.4,
+                                                    ease: "easeOut",
+                                                    delay: index * 0.10
+                                                }}
+                                            >
+                                                <TableCell>{user.name}</TableCell>
+
+                                                <TableCell>
+                                                    {user.email}
+                                                </TableCell>
+
+                                                <TableCell>
+                                                    <Chip
+                                                        label={user.status}
+                                                        color={getStatusColor(user.status)}
+                                                        size="small"
+                                                    />
+                                                </TableCell>
+                                            </MotionTableRow>
+                                        ))}
+                                    </TableBody>
+
+                                </Table>
+                            </Paper>
+                        )}
                     </motion.div>
 
                 </div>
