@@ -8,7 +8,7 @@ Para entrar no projeto é necessário digitar qualquer Email e a Senha deve cont
 
 ## 🌐 Acesse o Projeto
 
-[![Vercel Deploy](https://vercel.com/button)](https://adminflow-app.vercel.app/)
+[![Vercel Deploy](https://vercel.com/button)](https://adminflow-dashboard-ten.vercel.app/)
 
 ## 🚀 Objetivo do Projeto
 
