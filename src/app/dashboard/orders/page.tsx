@@ -10,12 +10,11 @@ import PageContainer from "@/components/layout/pageContainer";
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import StatusBadge from "@/components/ui/statusBadge";
-import PaymentDetailsModal from "@/components/ui/paymentsDetailsModal";
 import TableSkeleton from "@/components/skeletons/tableSkeleton";
 import ProtectedRoute from "@/components/layout/protectedRoute";
 
 type Order = {
-    id: number;
+    id: string;
     user: string;
     total: number;
     local: string;
@@ -36,7 +35,7 @@ function OrdersPage() {
     const [orderDirection, setOrderDirection] = useState<SortOrder>("asc");
     const MotionTableRow = motion(TableRow);
 
-    function getPaymentForOrder(Id: number) {
+    function getPaymentForOrder(Id: string) {
         return payments.find((p) => p.id === Id.toString());
     }
 
@@ -217,7 +216,7 @@ function OrdersPage() {
 
                                                 <TableCell>R$ {order.total.toFixed(2)}</TableCell>
 
-                                                <TableCell>{order.date}</TableCell>
+                                                <TableCell>{order.date || "Data Indisponível"}</TableCell>
 
                                                 <TableCell>{order.local}</TableCell>
 
@@ -234,7 +233,6 @@ function OrdersPage() {
                     )}
                 </div>
             </main>
-            <PaymentDetailsModal open={openModal} payment={selectedPayment} onClose={handleCloseModal} />
         </PageContainer>
     );
 }

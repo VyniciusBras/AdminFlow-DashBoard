@@ -1,5 +1,5 @@
 export type Order = {
-  id: number;
+  id: string;
   user: string;
   total: number;
   local: string;

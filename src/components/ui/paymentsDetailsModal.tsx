@@ -1,15 +1,7 @@
 "use client";
 
 import { Payment } from "@/types/payment";
-
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Button,
-    Chip,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Chip, } from "@mui/material";
 
 type Props = {
     payment: Payment | null;

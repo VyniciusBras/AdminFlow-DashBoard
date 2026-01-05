@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPayments } from "@/services/api";
 import { Payment } from "@/types/payment";
 import { Table, TableBody, TableCell, TableHead, TableRow, Chip, Paper, TableSortLabel, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { motion } from "framer-motion";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/services/firebase"
 
 import PageContainer from "@/components/layout/pageContainer";
 import Sidebar from "@/components/layout/sidebar";
@@ -55,6 +56,15 @@ function PaymentsPage() {
                 ? String(aValue).localeCompare(String(bValue))
                 : String(bValue).localeCompare(String(aValue));
         });
+    }
+
+    async function getPayments(): Promise<Payment[]> {
+        const paymentsCollection = collection(db, "payments");
+        const snapshot = await getDocs(paymentsCollection);
+        return snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        } as Payment));
     }
 
     useEffect(() => {
